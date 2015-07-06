@@ -4,12 +4,11 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     htmlreplace = require('gulp-html-replace'),
     uglify = require('gulp-uglify'),
-    clean = require('gulp-clean');
+    del = require('del');
 
-gulp.task('clean', function () {
+gulp.task('clean', function (cb) {
     'use strict';
-    return gulp.src('dist/*.*', {read: false})
-        .pipe(clean());
+    del(['dist/*'], cb);
 });
 
 gulp.task('scripts', ['clean'], function () {
