@@ -1,17 +1,14 @@
-/*global require:false*/
 /*global require*/
 
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var htmlreplace = require('gulp-html-replace');
-var uglify = require('gulp-uglify');
-var smoosher = require('gulp-smoosher');
-var htmlmin = require('gulp-minify-html');
-var clean = require('gulp-clean');
+var gulp = require('gulp'),
+    concat = require('gulp-concat'),
+    htmlreplace = require('gulp-html-replace'),
+    uglify = require('gulp-uglify'),
+    clean = require('gulp-clean');
 
 gulp.task('clean', function () {
     'use strict';
-    return gulp.src('build/*.*', {read: false})
+    return gulp.src('dist/*.*', {read: false})
         .pipe(clean());
 });
 
@@ -19,18 +16,16 @@ gulp.task('scripts', ['clean'], function () {
     'use strict';
     return gulp.src(['js/klad.js', 'js/img.js', 'js/keys.js', "js/maze.js",
         "js/levels.js", "js/bullet.js", "js/human.js", "js/main.js"])
-        .pipe(concat('all.min.js'))
+        .pipe(concat('klad.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('build'));
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('default', ['scripts'], function () {
     'use strict';
     return gulp.src('index.html')
         .pipe(htmlreplace({
-            'js': 'build/all.min.js'
+            'js': 'klad.js'
         }))
-        .pipe(smoosher())
-        .pipe(htmlmin())
-        .pipe(gulp.dest('build'));
+        .pipe(gulp.dest('dist'));
 });

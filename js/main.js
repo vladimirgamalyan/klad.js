@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded',
             }
             delayUpdate = 0;
 
-            // Перемещение врагов.
             delayUpdateAliens += 1;
             if (delayUpdateAliens > 2) {
                 delayUpdateAliens = 0;
@@ -76,8 +75,6 @@ document.addEventListener('DOMContentLoaded',
                 }
             }
 
-
-            // Проверим поймал ли игрока противник.
             var caught = player.caught(alien);
             if (alien1) {
                 if (alien1.caught(player)) {
@@ -101,7 +98,6 @@ document.addEventListener('DOMContentLoaded',
                 klad.key.isDown(klad.key.UP),
                 klad.key.isDown(klad.key.DOWN));
 
-            // Выстрел
             if (klad.key.isDown(klad.key.FIRE_LEFT)) {
                 bullet.shotLeft(player.getPos());
             }
