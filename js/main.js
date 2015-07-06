@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded',
             requestAnimationFrame(frame);
         }
 
-        //ctx.scale(2, 2);
+        ctx.scale(2, 2);
         restartLevel();
         requestAnimationFrame(frame);
     });
