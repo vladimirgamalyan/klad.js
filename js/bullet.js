@@ -1,7 +1,4 @@
-/*global klad:false*/
-/*global klad*/
-
-klad.createBullet = function (map) {
+export function createBullet(map) {
     "use strict";
 
     var LEFT = -1,
@@ -51,4 +48,4 @@ klad.createBullet = function (map) {
             active = map.shot(pos.x, pos.y, direction === RIGHT);
         }
     };
-};
+}

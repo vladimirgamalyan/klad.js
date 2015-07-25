@@ -1,10 +1,14 @@
 /*global require*/
 
 var gulp = require('gulp'),
-    concat = require('gulp-concat'),
     htmlreplace = require('gulp-html-replace'),
     uglify = require('gulp-uglify'),
-    del = require('del');
+    del = require('del'),
+    sourcemaps = require('gulp-sourcemaps'),
+    buffer = require('vinyl-buffer'),
+    source = require('vinyl-source-stream'),
+    browserify = require('browserify'),
+    babelify= require('babelify');
 
 gulp.task('clean', function (cb) {
     'use strict';
@@ -13,18 +17,24 @@ gulp.task('clean', function (cb) {
 
 gulp.task('scripts', ['clean'], function () {
     'use strict';
-    return gulp.src(['js/klad.js', 'js/img.js', 'js/keys.js', "js/maze.js",
-        "js/levels.js", "js/bullet.js", "js/human.js", "js/main.js"])
-        .pipe(concat('klad.js'))
+
+    return browserify('./js/app.js', {debug: true})
+        .add(require.resolve('babel/polyfill'))
+        .transform(babelify)
+        .bundle()
+        .pipe(source('./js/app.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(uglify())
-        .pipe(gulp.dest('dist'));
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('default', ['scripts'], function () {
     'use strict';
     return gulp.src('index.html')
         .pipe(htmlreplace({
-            'js': 'klad.js'
+            'js': 'js/app.js'
         }))
         .pipe(gulp.dest('dist'));
 });

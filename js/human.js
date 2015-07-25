@@ -1,7 +1,4 @@
-/*global klad:false*/
-/*global klad*/
-
-klad.createHuman = function (npc, map) {
+export function createHuman(npc, map) {
     "use strict";
 
     var human = {},
@@ -290,4 +287,4 @@ klad.createHuman = function (npc, map) {
     };
 
     return human;
-};
+}

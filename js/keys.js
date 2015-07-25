@@ -1,7 +1,4 @@
-/*global klad:false*/
-/*global klad*/
-
-klad.key = {
+export var kladKeys = {
 
     pressed: {},
     LEFT: 37,
@@ -30,19 +27,4 @@ klad.key = {
         "use strict";
         this.pressed = {};
     }
-};
-
-window.addEventListener('keyup', function (event) {
-    "use strict";
-    klad.key.onKeyup(event);
-}, false);
-
-window.addEventListener('keydown', function (event) {
-    "use strict";
-    klad.key.onKeydown(event);
-}, false);
-
-window.onblur = function () {
-    "use strict";
-    klad.key.reset();
 };

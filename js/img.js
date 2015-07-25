@@ -1,7 +1,4 @@
-/*global klad:false*/
-/*global klad*/
-
-klad.createImages = function () {
+export function createImages() {
     "use strict";
     var result = {},
         prefix = "data:image/png;base64,";
@@ -86,4 +83,4 @@ klad.createImages = function () {
     result.wateru = new Image();
     result.wateru.src = prefix + "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR4nGNkYGD4z4AHsBCQZ2AcFiYAAI+QCA1Eth8IAAAAAElFTkSuQmCC";
     return result;
-};
+}

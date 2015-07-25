@@ -1,7 +1,4 @@
-/*global klad:false*/
-/*global klad*/
-
-klad.createMaze = function () {
+export function createMaze() {
     "use strict";
 
     var maze = {
@@ -227,6 +224,5 @@ klad.createMaze = function () {
         return ((p === this.WALL) || (p === this.WATER) || (p === this.UNDERWATER) || (p === this.DOOR));
     };
 
-
     return maze;
-};
+}
