@@ -9,8 +9,6 @@ export class Klad {
     constructor(context) {
         context.addEventListener('DOMContentLoaded',
             function () {
-                "use strict";
-
                 var GAME_MODE_LOSE = 1,
                     GAME_MODE_GAME = 2,
                     GAME_MODE_FINISH = 3,
@@ -150,17 +148,14 @@ export class Klad {
                 }
 
                 window.addEventListener('keyup', function (event) {
-                    "use strict";
                     kladKeys.onKeyup(event);
                 }, false);
 
                 window.addEventListener('keydown', function (event) {
-                    "use strict";
                     kladKeys.onKeydown(event);
                 }, false);
 
                 window.onblur = function () {
-                    "use strict";
                     kladKeys.reset();
                 };
 

@@ -63,7 +63,7 @@ export function createMaze() {
                         p = this.UNDERWATER;
                     }
                 }
-                // FIXME: на карте сразу рисовать клад и заменять на ключ после того как игрок его найдет.
+                // FIXME: always draw the chest on the map, replace to key after find it.
                 if ((p === this.KEY) && (!keyFound)) {
                     p = this.KLAD;
                 }
