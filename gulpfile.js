@@ -12,7 +12,7 @@ var gulp = require('gulp'),
 
 gulp.task('clean', function (cb) {
     'use strict';
-    del(['dist/*'], cb);
+    del(['public/*'], cb);
 });
 
 gulp.task('scripts', ['clean'], function () {
@@ -27,7 +27,7 @@ gulp.task('scripts', ['clean'], function () {
         .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./public'));
 });
 
 gulp.task('default', ['scripts'], function () {
@@ -36,5 +36,5 @@ gulp.task('default', ['scripts'], function () {
         .pipe(htmlreplace({
             'js': 'js/app.js'
         }))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('public'));
 });
