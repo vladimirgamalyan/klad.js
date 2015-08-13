@@ -47,8 +47,8 @@ export class Human {
     }
 
     freeSquare(x, y) {
-        var p = this.map.get(x, y),
-            result = this.map.isSpace(p) || (p === this.map.LADDER) || (p === this.map.KLAD) || (p === this.map.KEY) ||
+        let p = this.map.get(x, y);
+        let result = this.map.isSpace(p) || (p === this.map.LADDER) || (p === this.map.KLAD) || (p === this.map.KEY) ||
                 (p === this.map.DOOR_OPENED) || (p === this.map.BRIDGE);
 
         if (!this.npc) {
@@ -110,8 +110,8 @@ export class Human {
     }
 
     moveUp() {
-        var x = Math.floor((this.pos.x + 2) / 4),
-            y = Math.floor(this.pos.y / 4);
+        let x = Math.floor((this.pos.x + 2) / 4);
+        let y = Math.floor(this.pos.y / 4);
         if (((this.pos.y % 4) === 0) && (!(this.freeSquare(x, y - 1) && (this.map.get(x, y) === this.map.LADDER)))) {
             return false;
         }
@@ -151,16 +151,7 @@ export class Human {
     }
 
     render(ctx, images) {
-
-        var pic = 8,
-            img,
-            HUMAN_SPRITES = [images.runner0, images.runner1, images.runner2, images.runner3,
-                images.runner4, images.runner5, images.runner6, images.runner7,
-                images.runner8, images.runner9,
-                images.runner10, images.runner11, images.runner12, images.runner13,
-                images.runner14, images.runner15, images.runner16, images.runner17,
-                images.runner18, images.runner19];
-
+        let pic = 8;
         if ((this.direction === LEFT) || (this.direction === RIGHT)) {
             pic = this.pos.x % 4;
         }
@@ -173,7 +164,14 @@ export class Human {
         if (this.npc) {
             pic += 10;
         }
-        img = HUMAN_SPRITES[pic];
+
+        const HUMAN_SPRITES = [images.runner0, images.runner1, images.runner2, images.runner3,
+            images.runner4, images.runner5, images.runner6, images.runner7,
+            images.runner8, images.runner9,
+            images.runner10, images.runner11, images.runner12, images.runner13,
+            images.runner14, images.runner15, images.runner16, images.runner17,
+            images.runner18, images.runner19];
+        let img = HUMAN_SPRITES[pic];
 
         ctx.drawImage(img, this.pos.x * (this.map.CELL_WIDTH / 4), this.pos.y * (this.map.CELL_HEIGHT / 4));
     }
@@ -188,17 +186,16 @@ export class Human {
     }
 
     freeFly() {
-        var x = Math.floor((this.pos.x + 2) / 4),
-            y = Math.floor(this.pos.y / 4),
-            p,
-            flying;
+        let x = Math.floor((this.pos.x + 2) / 4);
+        let y = Math.floor(this.pos.y / 4);
 
         this.freeSquare(x, y + 1);
         if (this.map.get(x, y) === this.map.LADDER) {
             return false;
         }
-        p = this.map.get(x, y + 1);
-        flying = (this.map.isSpace(p) || (p === this.map.WATER) || ((p === this.map.BRIDGE) && (this.direction === FLY)));
+
+        let p = this.map.get(x, y + 1);
+        let flying = (this.map.isSpace(p) || (p === this.map.WATER) || ((p === this.map.BRIDGE) && (this.direction === FLY)));
         if (!flying) {
             return false;
         }
@@ -226,10 +223,10 @@ export class Human {
     }
 
     moveToHuman(otherHuman) {
-        var toLeft = false,
-            toRight = false,
-            toUp = false,
-            toDown = false;
+        let toLeft = false;
+        let toRight = false;
+        let toUp = false;
+        let toDown = false;
 
         if (otherHuman.getPos().x < this.getPos().x) {
             toLeft = true;
@@ -283,8 +280,7 @@ export class Human {
             }
         }
 
-        if (this.map.get(Math.floor((this.pos.x + 2) / 4), Math.floor((this.pos.y + 2) / 4)) === this.map.BRICK)
-		{
+        if (this.map.get(Math.floor((this.pos.x + 2) / 4), Math.floor((this.pos.y + 2) / 4)) === this.map.BRICK) {
             this.kill();
         }
 
