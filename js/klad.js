@@ -1,6 +1,6 @@
 import { createMaze } from './maze';
 import { createBullet } from './bullet';
-import { createHuman } from './human';
+import { Human } from './human';
 import { createImages } from './img';
 import { kladKeys } from './keys';
 import { levels } from './levels';
@@ -18,8 +18,8 @@ export class Klad {
                     delayUpdate = 0,
                     delayUpdateAliens = 0,
                     maze = createMaze(),
-                    player = createHuman(false, maze),
-                    alien = createHuman(true, maze),
+                    player = new Human(false, maze),
+                    alien = new Human(true, maze),
                     alien1 = null,
                     bullet = createBullet(maze),
                     images = createImages();
@@ -33,7 +33,7 @@ export class Klad {
                     alien.respawn(levels[currentLevel].aliens[0].x, levels[currentLevel].aliens[0].y);
                     alien1 = null;
                     if (levels[currentLevel].aliens[1]) {
-                        alien1 = createHuman(true, maze);
+                        alien1 = new Human(true, maze);
                         alien1.respawn(levels[currentLevel].aliens[1].x, levels[currentLevel].aliens[1].y);
                     }
                 }

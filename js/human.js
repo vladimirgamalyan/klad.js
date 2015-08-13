@@ -1,118 +1,122 @@
-export function createHuman(npc, map) {
-    "use strict";
 
-    var human = {},
-        pos = { x: 4, y: 20 },
-        respawnPos = { x: 4, y: 4 },
-        alive = false,
-        direction,
-        LEFT = 1,
-        RIGHT = 2,
-        UP = 3,
-        DOWN = 4,
-        FLY = 5,
-        RESPAWN_TIME = 300,
-        keyFound = false,
-        deathTimer = 0,
-        finished = false;
+export class Human {
 
-    human.kill = function () {
-        alive = false;
-    };
+    constructor(npc, map) {
+        this.LEFT = 1;
+        this.RIGHT = 2;
+        this.UP = 3;
+        this.DOWN = 4;
+        this.FLY = 5;
+        this.RESPAWN_TIME = 300;
+        
+        this.npc = npc;
+        this.map = map;
+        this.pos = { x: 4, y: 20 };
+        this.respawnPos = { x: 4, y: 4 };
+        this.alive = false;
+        this.direction = this.LEFT;
+        this.keyFound = false;
+        this.deathTimer = 0;
+        this.finished = false;
+    }
 
-    human.isDead = function () {
-        return !alive;
-    };
+    kill() {
+        this.alive = false;
+    }
+
+    isDead() {
+        return !this.alive;
+    }
 
     // Distance to other human.
-    human.getDistance = function (otherHuman) {
-        return Math.floor(Math.sqrt(Math.pow(pos.x - otherHuman.getPos().x, 2) + Math.pow(pos.y - otherHuman.getPos().y, 2)));
-    };
+    getDistance(otherHuman) {
+        return Math.floor(Math.sqrt(Math.pow(this.pos.x - otherHuman.getPos().x, 2) + Math.pow(this.pos.y - otherHuman.getPos().y, 2)));
+    }
 
-    human.isKeyFound = function () {
-        return keyFound;
-    };
+    isKeyFound() {
+        return this.keyFound;
+    }
 
-    human.caught = function (otherHuman) {
+    caught(otherHuman) {
         return (this.getDistance(otherHuman) < 3);
-    };
+    }
 
-    human.resetKeyFound = function () {
-        keyFound = false;
-    };
+    resetKeyFound() {
+        this.keyFound = false;
+    }
 
-    human.freeSquare = function (x, y) {
-        var p = map.get(x, y),
-            result = map.isSpace(p) || (p === map.LADDER) || (p === map.KLAD) || (p === map.KEY) ||
-                (p === map.DOOR_OPENED) || (p === map.BRIDGE);
+    freeSquare(x, y) {
+        var p = this.map.get(x, y),
+            result = this.map.isSpace(p) || (p === this.map.LADDER) || (p === this.map.KLAD) || (p === this.map.KEY) ||
+                (p === this.map.DOOR_OPENED) || (p === this.map.BRIDGE);
 
-        if (!npc) {
-            if (p === map.KLAD) {
-                map.set(x, y, map.SPACE);
+        if (!this.npc) {
+            if (p === this.map.KLAD) {
+                this.map.set(x, y, this.map.SPACE);
             }
-            if (p === map.KEY) {
-                keyFound = true;
-                map.setKeyFound();
+            if (p === this.map.KEY) {
+                this.keyFound = true;
+                this.map.setKeyFound();
             }
-            if ((p === map.DOOR) && keyFound) {
-                map.set(x, y, map.DOOR_OPENED);
+            if ((p === this.map.DOOR) && this.keyFound) {
+                this.map.set(x, y, this.map.DOOR_OPENED);
                 result = true;
             }
             if (y < 0) {
-                finished = true;
+                this.finished = true;
             }
         }
 
-        if ((p === map.WATER) && (pos.y % 4) === 2) {
+        if ((p === this.map.WATER) && (this.pos.y % 4) === 2) {
             this.kill();
         }
 
         return result;
     };
 
-    human.getPos = function () {
-        return pos;
-    };
+    getPos() {
+        return this.pos;
+    }
 
-    human.moveLeft = function () {
-        if (((pos.x % 4) === 0) && (!this.freeSquare(Math.floor(pos.x / 4) - 1, Math.floor((pos.y + 2) / 4)))) {
+    moveLeft() {
+        if (((this.pos.x % 4) === 0) && (!this.freeSquare(Math.floor(this.pos.x / 4) - 1, Math.floor((this.pos.y + 2) / 4)))) {
             return false;
         }
-        if ((pos.y % 4) !== 0) {
-            if ((pos.y % 4) > 1) {
+        if ((this.pos.y % 4) !== 0) {
+            if ((this.pos.y % 4) > 1) {
                 return this.moveDown();
             }
             return this.moveUp();
         }
-        pos.x -= 1;
-        direction = LEFT;
+        this.pos.x -= 1;
+        this.direction = this.LEFT;
         return true;
-    };
+    }
 
-    human.moveRight = function () {
-        if (((pos.x % 4) === 0) && (!this.freeSquare(Math.floor(pos.x / 4) + 1, Math.floor((pos.y + 2) / 4)))) {
+    moveRight() {
+        if (((this.pos.x % 4) === 0) && (!this.freeSquare(Math.floor(this.pos.x / 4) + 1, Math.floor((this.pos.y + 2) / 4)))) {
             return false;
         }
-        if ((pos.y % 4) !== 0) {
-            if ((pos.y % 4) > 1) {
+        if ((this.pos.y % 4) !== 0) {
+            if ((this.pos.y % 4) > 1) {
                 return this.moveDown();
             }
             return this.moveUp();
         }
-        pos.x += 1;
-        direction = RIGHT;
+        this.pos.x += 1;
+        this.direction = this.RIGHT;
         return true;
-    };
+    }
 
-    human.moveUp = function () {
-        var x = Math.floor((pos.x + 2) / 4),
-            y = Math.floor(pos.y / 4);
-        if (((pos.y % 4) === 0) && (!(this.freeSquare(x, y - 1) && (map.get(x, y) === map.LADDER)))) {
+    moveUp() {
+        var x = Math.floor((this.pos.x + 2) / 4),
+            y = Math.floor(this.pos.y / 4);
+        if (((this.pos.y % 4) === 0) && (!(this.freeSquare(x, y - 1) && (this.map.get(x, y) === this.map.LADDER)))) {
             return false;
         }
-        if ((pos.x % 4) !== 0) {
-            if (!npc) {
-                if ((pos.x % 4) > 1) {
+        if ((this.pos.x % 4) !== 0) {
+            if (!this.npc) {
+                if ((this.pos.x % 4) > 1) {
                     this.moveRight();
                 } else {
                     this.moveLeft();
@@ -120,19 +124,19 @@ export function createHuman(npc, map) {
             }
             return false;
         }
-        pos.y -= 1;
-        direction = UP;
+        this.pos.y -= 1;
+        this.direction = this.UP;
         return true;
-    };
+    }
 
-    human.moveDown = function () {
-        if (((pos.y % 4) === 0) && (!this.freeSquare(Math.floor((pos.x + 2) / 4), Math.floor(pos.y / 4) + 1) ||
-            (map.get(Math.floor((pos.x + 2) / 4), Math.floor(pos.y / 4) + 1) === map.BRIDGE))) {
+    moveDown() {
+        if (((this.pos.y % 4) === 0) && (!this.freeSquare(Math.floor((this.pos.x + 2) / 4), Math.floor(this.pos.y / 4) + 1) ||
+            (this.map.get(Math.floor((this.pos.x + 2) / 4), Math.floor(this.pos.y / 4) + 1) === this.map.BRIDGE))) {
             return false;
         }
-        if ((pos.x % 4) !== 0) {
-            if (!npc) {
-                if ((pos.x % 4) > 1) {
+        if ((this.pos.x % 4) !== 0) {
+            if (!this.npc) {
+                if ((this.pos.x % 4) > 1) {
                     this.moveRight();
                 } else {
                     this.moveLeft();
@@ -140,12 +144,12 @@ export function createHuman(npc, map) {
             }
             return false;
         }
-        pos.y += 1;
-        direction = DOWN;
+        this.pos.y += 1;
+        this.direction = this.DOWN;
         return true;
-    };
+    }
 
-    human.render = function (ctx, images) {
+    render(ctx, images) {
 
         var pic = 8,
             img,
@@ -156,71 +160,71 @@ export function createHuman(npc, map) {
                 images.runner14, images.runner15, images.runner16, images.runner17,
                 images.runner18, images.runner19];
 
-        if ((direction === LEFT) || (direction === RIGHT)) {
-            pic = pos.x % 4;
+        if ((this.direction === this.LEFT) || (this.direction === this.RIGHT)) {
+            pic = this.pos.x % 4;
         }
-        if (direction === LEFT) {
+        if (this.direction === this.LEFT) {
             pic += 4;
         }
-        if ((direction === UP) || (direction === DOWN)) {
-            pic = (pos.y % 2) + 8;
+        if ((this.direction === this.UP) || (this.direction === this.DOWN)) {
+            pic = (this.pos.y % 2) + 8;
         }
-        if (npc) {
+        if (this.npc) {
             pic += 10;
         }
         img = HUMAN_SPRITES[pic];
 
-        ctx.drawImage(img, pos.x * (map.CELL_WIDTH / 4), pos.y * (map.CELL_HEIGHT / 4));
-    };
+        ctx.drawImage(img, this.pos.x * (this.map.CELL_WIDTH / 4), this.pos.y * (this.map.CELL_HEIGHT / 4));
+    }
 
-    human.respawn = function (x, y) {
-        respawnPos.x = x;
-        respawnPos.y = y;
-        pos.x = respawnPos.x * 4;
-        pos.y = respawnPos.y * 4;
-        alive = true;
-        deathTimer = 0;
-    };
+    respawn(x, y) {
+        this.respawnPos.x = x;
+        this.respawnPos.y = y;
+        this.pos.x = this.respawnPos.x * 4;
+        this.pos.y = this.respawnPos.y * 4;
+        this.alive = true;
+        this.deathTimer = 0;
+    }
 
-    human.freeFly = function () {
-        var x = Math.floor((pos.x + 2) / 4),
-            y = Math.floor(pos.y / 4),
+    freeFly() {
+        var x = Math.floor((this.pos.x + 2) / 4),
+            y = Math.floor(this.pos.y / 4),
             p,
             flying;
 
         this.freeSquare(x, y + 1);
-        if (map.get(x, y) === map.LADDER) {
+        if (this.map.get(x, y) === this.map.LADDER) {
             return false;
         }
-        p = map.get(x, y + 1);
-        flying = (map.isSpace(p) || (p === map.WATER) || ((p === map.BRIDGE) && (direction === FLY)));
+        p = this.map.get(x, y + 1);
+        flying = (this.map.isSpace(p) || (p === this.map.WATER) || ((p === this.map.BRIDGE) && (this.direction === this.FLY)));
         if (!flying) {
             return false;
         }
 
-        if ((pos.x % 4) !== 0) {
-            if ((pos.x % 4) > 1) {
+        if ((this.pos.x % 4) !== 0) {
+            if ((this.pos.x % 4) > 1) {
                 this.moveRight();
             } else {
                 this.moveLeft();
             }
         } else {
-            pos.y += 1;
+            this.pos.y += 1;
         }
 
-        direction = FLY;
+        this.direction = this.FLY;
         return true;
-    };
+    }
 
-    human.isFinished = function () {
-        return finished;
-    };
+    isFinished() {
+        return this.finished;
+    }
 
-    human.resetFinished = function () {
-        finished = false;
-    };
+    resetFinished() {
+        this.finished = false;
+    }
 
-    human.moveToHuman = function (otherHuman) {
+    moveToHuman(otherHuman) {
         var toLeft = false,
             toRight = false,
             toUp = false,
@@ -240,14 +244,14 @@ export function createHuman(npc, map) {
         }
 
         this.move(toLeft, toRight, toUp, toDown);
-    };
+    }
 
-    human.move = function (toLeft, toRight, toUp, toDown) {
-        if (npc) {
-            if (!alive) {
-                deathTimer += 1;
-                if (deathTimer >= RESPAWN_TIME) {
-                    this.respawn(respawnPos.x, respawnPos.y);
+    move(toLeft, toRight, toUp, toDown) {
+        if (this.npc) {
+            if (!this.alive) {
+                this.deathTimer += 1;
+                if (this.deathTimer >= this.RESPAWN_TIME) {
+                    this.respawn(this.respawnPos.x, this.respawnPos.y);
                 }
                 return false;
             }
@@ -278,13 +282,11 @@ export function createHuman(npc, map) {
             }
         }
 
-        if (map.get(Math.floor((pos.x + 2) / 4), Math.floor((pos.y + 2) / 4)) === map.BRICK)
+        if (this.map.get(Math.floor((this.pos.x + 2) / 4), Math.floor((this.pos.y + 2) / 4)) === this.map.BRICK)
 		{
             this.kill();
         }
 
         return true;
-    };
-
-    return human;
+    }
 }
