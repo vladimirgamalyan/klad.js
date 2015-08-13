@@ -1,20 +1,21 @@
 
+const LEFT = 1;
+const RIGHT = 2;
+const UP = 3;
+const DOWN = 4;
+const FLY = 5;
+const RESPAWN_TIME = 300;
+
 export class Human {
 
     constructor(npc, map) {
-        this.LEFT = 1;
-        this.RIGHT = 2;
-        this.UP = 3;
-        this.DOWN = 4;
-        this.FLY = 5;
-        this.RESPAWN_TIME = 300;
-        
+     
         this.npc = npc;
         this.map = map;
         this.pos = { x: 4, y: 20 };
         this.respawnPos = { x: 4, y: 4 };
         this.alive = false;
-        this.direction = this.LEFT;
+        this.direction = LEFT;
         this.keyFound = false;
         this.deathTimer = 0;
         this.finished = false;
@@ -89,7 +90,7 @@ export class Human {
             return this.moveUp();
         }
         this.pos.x -= 1;
-        this.direction = this.LEFT;
+        this.direction = LEFT;
         return true;
     }
 
@@ -104,7 +105,7 @@ export class Human {
             return this.moveUp();
         }
         this.pos.x += 1;
-        this.direction = this.RIGHT;
+        this.direction = RIGHT;
         return true;
     }
 
@@ -125,7 +126,7 @@ export class Human {
             return false;
         }
         this.pos.y -= 1;
-        this.direction = this.UP;
+        this.direction = UP;
         return true;
     }
 
@@ -145,7 +146,7 @@ export class Human {
             return false;
         }
         this.pos.y += 1;
-        this.direction = this.DOWN;
+        this.direction = DOWN;
         return true;
     }
 
@@ -160,13 +161,13 @@ export class Human {
                 images.runner14, images.runner15, images.runner16, images.runner17,
                 images.runner18, images.runner19];
 
-        if ((this.direction === this.LEFT) || (this.direction === this.RIGHT)) {
+        if ((this.direction === LEFT) || (this.direction === RIGHT)) {
             pic = this.pos.x % 4;
         }
-        if (this.direction === this.LEFT) {
+        if (this.direction === LEFT) {
             pic += 4;
         }
-        if ((this.direction === this.UP) || (this.direction === this.DOWN)) {
+        if ((this.direction === UP) || (this.direction === DOWN)) {
             pic = (this.pos.y % 2) + 8;
         }
         if (this.npc) {
@@ -197,7 +198,7 @@ export class Human {
             return false;
         }
         p = this.map.get(x, y + 1);
-        flying = (this.map.isSpace(p) || (p === this.map.WATER) || ((p === this.map.BRIDGE) && (this.direction === this.FLY)));
+        flying = (this.map.isSpace(p) || (p === this.map.WATER) || ((p === this.map.BRIDGE) && (this.direction === FLY)));
         if (!flying) {
             return false;
         }
@@ -212,7 +213,7 @@ export class Human {
             this.pos.y += 1;
         }
 
-        this.direction = this.FLY;
+        this.direction = FLY;
         return true;
     }
 
@@ -250,7 +251,7 @@ export class Human {
         if (this.npc) {
             if (!this.alive) {
                 this.deathTimer += 1;
-                if (this.deathTimer >= this.RESPAWN_TIME) {
+                if (this.deathTimer >= RESPAWN_TIME) {
                     this.respawn(this.respawnPos.x, this.respawnPos.y);
                 }
                 return false;
