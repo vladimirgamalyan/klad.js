@@ -1,51 +1,53 @@
-export function createBullet(map) {
-    "use strict";
 
-    var LEFT = -1,
-        RIGHT = 1,
-        pos = {x: 0, y: 0},
-        active = false,
-        direction;
+const LEFT = -1;
+const RIGHT = 1;
 
-    return {
-        getPos: function () {
-            return pos;
-        },
+export class Bullet {
 
-        render: function (ctx, images) {
-            if (active) {
-                ctx.drawImage(images.bullet, pos.x * map.CELL_WIDTH, pos.y * map.CELL_HEIGHT);
-            }
-        },
+    constructor(map) {
+        this.map = map;
+        this.active = false;
+        this.direction = LEFT;
+        this.pos = {x: 0, y: 0};
+    }
 
-        shot: function (x, y, dir) {
-            if (active) {
-                return;
-            }
-            pos.x = Math.floor((x + 2) / 4);
-            pos.y = Math.floor((y + 2) / 4);
-            direction = dir;
-            active = true;
-        },
+    getPos() {
+        return this.pos;
+    }
 
-        shotLeft: function (pos) {
-            this.shot(pos.x, pos.y, LEFT);
-        },
-
-        shotRight: function (pos) {
-            this.shot(pos.x, pos.y, RIGHT);
-        },
-
-        move: function () {
-            if (!active) {
-                return;
-            }
-            if (direction === RIGHT) {
-                pos.x += 1;
-            } else {
-                pos.x -= 1;
-            }
-            active = map.shot(pos.x, pos.y, direction === RIGHT);
+    render(ctx, images) {
+        if (this.active) {
+            ctx.drawImage(images.bullet, this.pos.x * this.map.CELL_WIDTH, this.pos.y * this.map.CELL_HEIGHT);
         }
-    };
+    }
+
+    shot(x, y, dir) {
+        if (this.active) {
+            return;
+        }
+        this.pos.x = Math.floor((x + 2) / 4);
+        this.pos.y = Math.floor((y + 2) / 4);
+        this.direction = dir;
+        this.active = true;
+    }
+
+    shotLeft(pos) {
+        this.shot(pos.x, pos.y, LEFT);
+    }
+
+    shotRight(pos) {
+        this.shot(pos.x, pos.y, RIGHT);
+    }
+
+    move() {
+        if (!this.active) {
+            return;
+        }
+        if (this.direction === RIGHT) {
+            this.pos.x += 1;
+        } else {
+            this.pos.x -= 1;
+        }
+        this.active = this.map.shot(this.pos.x, this.pos.y, this.direction === RIGHT);
+    }
 }

@@ -259,7 +259,7 @@ export class Human {
             return false;
         }
 
-        var moved = false;
+        let moved = false;
         if (toLeft) {
             if (this.moveLeft()) {
                 moved = true;

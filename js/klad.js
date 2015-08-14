@@ -1,5 +1,5 @@
 import { createMaze } from './maze';
-import { createBullet } from './bullet';
+import { Bullet } from './bullet';
 import { Human } from './human';
 import { createImages } from './img';
 import { kladKeys } from './keys';
@@ -21,12 +21,12 @@ export class Klad {
                     player = new Human(false, maze),
                     alien = new Human(true, maze),
                     alien1 = null,
-                    bullet = createBullet(maze),
+                    bullet = new Bullet(maze),
                     images = createImages();
 
                 function restartLevel() {
                     maze.loadLevel(currentLevel, levels);
-                    bullet = createBullet(maze);
+                    bullet = new Bullet(maze);
                     player.resetFinished();
                     player.respawn(levels[currentLevel].player.x, levels[currentLevel].player.y);
                     player.resetKeyFound();
