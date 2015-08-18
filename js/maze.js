@@ -19,10 +19,10 @@ export function createMaze() {
         BRICK0: 36,
         BRICK1: 37,
         BRICK2: 38,
-        BRICKL0: 39,
-        BRICKL1: 40,
-        BRICKR0: 41,
-        BRICKR1: 42
+        BRICK_L0: 39,
+        BRICK_L1: 40,
+        BRICK_R0: 41,
+        BRICK_R1: 42
     },
         MAP_WIDTH = 32,
         MAP_HEIGHT = 22,
@@ -111,16 +111,16 @@ export function createMaze() {
                 case this.BRICK2:
                     img = images.brick2;
                     break;
-                case this.BRICKL0:
+                case this.BRICK_L0:
                     img = images.brickL0;
                     break;
-                case this.BRICKL1:
+                case this.BRICK_L1:
                     img = images.brickL1;
                     break;
-                case this.BRICKR0:
+                case this.BRICK_R0:
                     img = images.brickR0;
                     break;
-                case this.BRICKR1:
+                case this.BRICK_R1:
                     img = images.brickR1;
                     break;
                 }
@@ -194,15 +194,15 @@ export function createMaze() {
         t = this.SPACE;
         if (fromRight) {
             if (p === this.BRICK) {
-                t = this.BRICKL0;
-            } else if ((p === this.BRICKL0) || (p === this.BRICKR0)) {
-                t = this.BRICKL1;
+                t = this.BRICK_L0;
+            } else if ((p === this.BRICK_L0) || (p === this.BRICK_R0)) {
+                t = this.BRICK_L1;
             }
         } else {
             if (p === this.BRICK) {
-                t = this.BRICKR0;
-            } else if ((p === this.BRICKL0) || (p === this.BRICKR0)) {
-                t = this.BRICKR1;
+                t = this.BRICK_R0;
+            } else if ((p === this.BRICK_L0) || (p === this.BRICK_R0)) {
+                t = this.BRICK_R1;
             }
         }
 
@@ -217,7 +217,7 @@ export function createMaze() {
     };
 
     maze.isBrick = function (p) {
-        return ((p === this.BRICK) || (p === this.BRICKL0) || (p === this.BRICKL1) || (p === this.BRICKR0) || (p === this.BRICKR1));
+        return ((p === this.BRICK) || (p === this.BRICK_L0) || (p === this.BRICK_L1) || (p === this.BRICK_R0) || (p === this.BRICK_R1));
     };
 
     maze.antiBullet = function (p) {
