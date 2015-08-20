@@ -57,7 +57,7 @@ export class Klad {
             return;
         }
         this.gameMode = GAME_MODE_GAME;
-        restartLevel();
+        this.restartLevel();
     }
 
     updateFinish() {
@@ -70,7 +70,7 @@ export class Klad {
         if (this.currentLevel >= 5) {
             this.currentLevel = 0;
         }
-        restartLevel();
+        this.restartLevel();
     }
 
     updateGame() {

@@ -19,19 +19,19 @@ export class Keys {
     }
 
     isLeft() {
-        return this.pressed[37];
+        return this.pressed[37] || this.pressed[65];
     }
 
     isRight() {
-        return this.pressed[39];
+        return this.pressed[39] || this.pressed[68];
     }
 
     isUp() {
-        return this.pressed[38];
+        return this.pressed[38] || this.pressed[87];
     }
 
     isDown() {
-        return this.pressed[40];
+        return this.pressed[40] || this.pressed[83];
     }
 
     isFireLeft() {
@@ -39,6 +39,6 @@ export class Keys {
     }
 
     isFireRight() {
-        return this.pressed[87];
+        return this.pressed[69];
     }
 }
