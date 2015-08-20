@@ -5,165 +5,169 @@ import { createImages } from './img';
 import { kladKeys } from './keys';
 import { levels } from './levels';
 
+const GAME_MODE_LOSE = 1;
+const GAME_MODE_GAME = 2;
+const GAME_MODE_FINISH = 3;
+
 export class Klad {
+
     constructor(context) {
-        context.addEventListener('DOMContentLoaded',
-            function () {
-                var GAME_MODE_LOSE = 1,
-                    GAME_MODE_GAME = 2,
-                    GAME_MODE_FINISH = 3,
-                    gameMode = GAME_MODE_GAME,
-                    currentLevel = 0,
-                    ctx = context.getElementById('canvas').getContext('2d'),
-                    delayUpdate = 0,
-                    delayUpdateAliens = 0,
-                    maze = createMaze(),
-                    player = new Human(false, maze),
-                    alien = new Human(true, maze),
-                    alien1 = null,
-                    bullet = new Bullet(maze),
-                    images = createImages();
+        var that = this;
+        document.addEventListener('DOMContentLoaded', function () {
+            that.run(context);
+        });
+    }
 
-                function restartLevel() {
-                    maze.loadLevel(currentLevel, levels);
-                    bullet = new Bullet(maze);
-                    player.resetFinished();
-                    player.respawn(levels[currentLevel].player.x, levels[currentLevel].player.y);
-                    player.resetKeyFound();
-                    alien.respawn(levels[currentLevel].aliens[0].x, levels[currentLevel].aliens[0].y);
-                    alien1 = null;
-                    if (levels[currentLevel].aliens[1]) {
-                        alien1 = new Human(true, maze);
-                        alien1.respawn(levels[currentLevel].aliens[1].x, levels[currentLevel].aliens[1].y);
-                    }
-                }
+    run(context) {
+        this.gameMode = GAME_MODE_GAME;
+        this.currentLevel = 0;
+        this.ctx = context.getElementById('canvas').getContext('2d');
+        this.delayUpdate = 0;
+        this.delayUpdateAliens = 0;
+        this.maze = createMaze();
+        this.player = new Human(false, this.maze);
+        this.alien = new Human(true, this.maze);
+        this.alien1 = null;
+        this.bullet = new Bullet(this.maze);
+        this.images = createImages();
 
-                function updateLose() {
-                    if (delayUpdate < 60) {
-                        delayUpdate += 1;
-                        return;
-                    }
-                    gameMode = GAME_MODE_GAME;
-                    restartLevel();
-                }
+        context.addEventListener('keyup', function (event) {
+            kladKeys.onKeyup(event);
+        }, false);
 
-                function updateFinish() {
-                    if (delayUpdate < 30) {
-                        delayUpdate += 1;
-                        return;
-                    }
-                    gameMode = GAME_MODE_GAME;
-                    currentLevel += 1;
-                    if (currentLevel >= 5) {
-                        currentLevel = 0;
-                    }
-                    restartLevel();
-                }
+        context.addEventListener('keydown', function (event) {
+            kladKeys.onKeydown(event);
+        }, false);
 
-                function updateGame() {
-                    delayUpdate += 1;
-                    if (delayUpdate < 2) {
-                        return;
-                    }
-                    delayUpdate = 0;
+        context.onblur = function () {
+            kladKeys.reset();
+        };
 
-                    delayUpdateAliens += 1;
-                    if (delayUpdateAliens > 2) {
-                        delayUpdateAliens = 0;
-                    } else {
-                        alien.moveToHuman(player);
-                        if (alien1) {
-                            alien1.moveToHuman(player);
-                        }
-                    }
+        this.ctx.scale(2, 2);
+        this.restartLevel();
+        requestAnimationFrame(this.frame.bind(this));
+    }
+    
+    restartLevel() {
+        this.maze.loadLevel(this.currentLevel, levels);
+        this.bullet = new Bullet(this.maze);
+        this.player.resetFinished();
+        this.player.respawn(levels[this.currentLevel].player.x, levels[this.currentLevel].player.y);
+        this.player.resetKeyFound();
+        this.alien.respawn(levels[this.currentLevel].aliens[0].x, levels[this.currentLevel].aliens[0].y);
+        this.alien1 = null;
+        if (levels[this.currentLevel].aliens[1]) {
+            this.alien1 = new Human(true, this.maze);
+            this.alien1.respawn(levels[this.currentLevel].aliens[1].x, levels[this.currentLevel].aliens[1].y);
+        }
+    }
 
-                    var caught = player.caught(alien);
-                    if (alien1) {
-                        if (alien1.caught(player)) {
-                            caught = true;
-                        }
-                    }
+    updateLose() {
+        if (this.delayUpdate < 60) {
+            this.delayUpdate += 1;
+            return;
+        }
+        this.gameMode = GAME_MODE_GAME;
+        restartLevel();
+    }
 
-                    if (caught) {
-                        player.kill();
-                        alien.kill();
-                        if (alien1) {
-                            alien1.kill();
-                        }
-                    }
+    updateFinish() {
+        if (this.delayUpdate < 30) {
+            this.delayUpdate += 1;
+            return;
+        }
+        this.gameMode = GAME_MODE_GAME;
+        this.currentLevel += 1;
+        if (this.currentLevel >= 5) {
+            this.currentLevel = 0;
+        }
+        restartLevel();
+    }
 
-                    bullet.move();
-                    maze.wallRegen();
+    updateGame() {
+        this.delayUpdate += 1;
+        if (this.delayUpdate < 2) {
+            return;
+        }
+        this.delayUpdate = 0;
 
-                    player.move(kladKeys.isDown(kladKeys.LEFT),
-                        kladKeys.isDown(kladKeys.RIGHT),
-                        kladKeys.isDown(kladKeys.UP),
-                        kladKeys.isDown(kladKeys.DOWN));
+        this.delayUpdateAliens += 1;
+        if (this.delayUpdateAliens > 2) {
+            this.delayUpdateAliens = 0;
+        } else {
+            this.alien.moveToHuman(this.player);
+            if (this.alien1) {
+                this.alien1.moveToHuman(this.player);
+            }
+        }
 
-                    if (kladKeys.isDown(kladKeys.FIRE_LEFT)) {
-                        bullet.shotLeft(player.getPos());
-                    }
-                    if (kladKeys.isDown(kladKeys.FIRE_RIGHT)) {
-                        bullet.shotRight(player.getPos());
-                    }
+        let caught = this.player.caught(this.alien);
+        if (this.alien1) {
+            if (this.alien1.caught(this.player)) {
+                caught = true;
+            }
+        }
 
-                    if (player.isFinished()) {
-                        gameMode = GAME_MODE_FINISH;
-                        return;
-                    }
+        if (caught) {
+            this.player.kill();
+            this.alien.kill();
+            if (this.alien1) {
+                this.alien1.kill();
+            }
+        }
 
-                    if (player.isDead()) {
-                        gameMode = GAME_MODE_LOSE;
-                    }
-                }
+        this.bullet.move();
+        this.maze.wallRegen();
 
-                function update() {
-                    switch (gameMode) {
-                        case GAME_MODE_LOSE:
-                            updateLose();
-                            break;
-                        case GAME_MODE_GAME:
-                            updateGame();
-                            break;
-                        case GAME_MODE_FINISH:
-                            updateFinish();
-                            break;
-                    }
-                }
+        this.player.move(kladKeys.isDown(kladKeys.LEFT),
+            kladKeys.isDown(kladKeys.RIGHT),
+            kladKeys.isDown(kladKeys.UP),
+            kladKeys.isDown(kladKeys.DOWN));
 
-                function render() {
-                    maze.render(ctx, images);
-                    player.render(ctx, images);
-                    alien.render(ctx, images);
-                    if (alien1) {
-                        alien1.render(ctx, images);
-                    }
-                    bullet.render(ctx, images);
-                }
+        if (kladKeys.isDown(kladKeys.FIRE_LEFT)) {
+            this.bullet.shotLeft(this.player.getPos());
+        }
+        if (kladKeys.isDown(kladKeys.FIRE_RIGHT)) {
+            this.bullet.shotRight(this.player.getPos());
+        }
 
-                function frame() {
-                    update();
-                    render();
-                    requestAnimationFrame(frame);
-                }
+        if (this.player.isFinished()) {
+            this.gameMode = GAME_MODE_FINISH;
+            return;
+        }
 
-                window.addEventListener('keyup', function (event) {
-                    kladKeys.onKeyup(event);
-                }, false);
+        if (this.player.isDead()) {
+            this.gameMode = GAME_MODE_LOSE;
+        }
+    }
 
-                window.addEventListener('keydown', function (event) {
-                    kladKeys.onKeydown(event);
-                }, false);
+    update() {
+        switch (this.gameMode) {
+            case GAME_MODE_LOSE:
+                this.updateLose();
+                break;
+            case GAME_MODE_GAME:
+                this.updateGame();
+                break;
+            case GAME_MODE_FINISH:
+                this.updateFinish();
+                break;
+        }
+    }
 
-                window.onblur = function () {
-                    kladKeys.reset();
-                };
+    render() {
+        this.maze.render(this.ctx, this.images);
+        this.player.render(this.ctx, this.images);
+        this.alien.render(this.ctx, this.images);
+        if (this.alien1) {
+            this.alien1.render(this.ctx, this.images);
+        }
+        this.bullet.render(this.ctx, this.images);
+    }
 
-                
-                ctx.scale(2, 2);
-                restartLevel();
-                requestAnimationFrame(frame);
-            });
-
+    frame() {
+        this.update();
+        this.render();
+        requestAnimationFrame(this.frame.bind(this));
     }
 }
