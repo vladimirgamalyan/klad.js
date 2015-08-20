@@ -2,7 +2,7 @@ import { createMaze } from './maze';
 import { Bullet } from './bullet';
 import { Human } from './human';
 import { createImages } from './img';
-import { kladKeys } from './keys';
+import { Keys } from './keys';
 import { levels } from './levels';
 
 const GAME_MODE_LOSE = 1;
@@ -30,18 +30,7 @@ export class Klad {
         this.alien1 = null;
         this.bullet = new Bullet(this.maze);
         this.images = createImages();
-
-        context.addEventListener('keyup', function (event) {
-            kladKeys.onKeyup(event);
-        }, false);
-
-        context.addEventListener('keydown', function (event) {
-            kladKeys.onKeydown(event);
-        }, false);
-
-        context.onblur = function () {
-            kladKeys.reset();
-        };
+        this.keys = new Keys(context);
 
         this.ctx.scale(2, 2);
         this.restartLevel();
@@ -119,15 +108,13 @@ export class Klad {
         this.bullet.move();
         this.maze.wallRegen();
 
-        this.player.move(kladKeys.isDown(kladKeys.LEFT),
-            kladKeys.isDown(kladKeys.RIGHT),
-            kladKeys.isDown(kladKeys.UP),
-            kladKeys.isDown(kladKeys.DOWN));
+        this.player.move(this.keys.isLeft(), this.keys.isRight(),
+            this.keys.isUp(), this.keys.isDown());
 
-        if (kladKeys.isDown(kladKeys.FIRE_LEFT)) {
+        if (this.keys.isFireLeft()) {
             this.bullet.shotLeft(this.player.getPos());
         }
-        if (kladKeys.isDown(kladKeys.FIRE_RIGHT)) {
+        if (this.keys.isFireRight()) {
             this.bullet.shotRight(this.player.getPos());
         }
 

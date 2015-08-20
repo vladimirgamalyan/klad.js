@@ -1,30 +1,44 @@
-export var kladKeys = {
 
-    pressed: {},
-    LEFT: 37,
-    UP: 38,
-    RIGHT: 39,
-    DOWN: 40,
-    FIRE_LEFT: 81, // q
-    FIRE_RIGHT: 87, // w
+export class Keys {
 
-    isDown: function (keyCode) {
-        "use strict";
-        return this.pressed[keyCode];
-    },
+    constructor(context) {
+        var that = this;
+        that.pressed = {};
 
-    onKeydown: function (event) {
-        "use strict";
-        this.pressed[event.keyCode] = true;
-    },
+        context.addEventListener('keyup', function (event) {
+            delete that.pressed[event.keyCode];
+        }, false);
 
-    onKeyup: function (event) {
-        "use strict";
-        delete this.pressed[event.keyCode];
-    },
+        context.addEventListener('keydown', function (event) {
+            that.pressed[event.keyCode] = true;
+        }, false);
 
-    reset: function () {
-        "use strict";
-        this.pressed = {};
+        context.onblur = function () {
+            that.reset.bind(that);
+        };
     }
-};
+
+    isLeft() {
+        return this.pressed[37];
+    }
+
+    isRight() {
+        return this.pressed[39];
+    }
+
+    isUp() {
+        return this.pressed[38];
+    }
+
+    isDown() {
+        return this.pressed[40];
+    }
+
+    isFireLeft() {
+        return this.pressed[81];
+    }
+
+    isFireRight() {
+        return this.pressed[87];
+    }
+}
