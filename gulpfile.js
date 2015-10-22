@@ -12,12 +12,11 @@ var gulp = require('gulp'),
 
 gulp.task('clean', function (cb) {
     'use strict';
-    del(['public/*'], cb);
+    return del(['public/*']);
 });
 
 gulp.task('scripts', ['clean'], function () {
     'use strict';
-
     return browserify('./js/app.js', {debug: true})
         .add(require.resolve('babel/polyfill'))
         .transform(babelify)
