@@ -10,7 +10,7 @@ var gulp = require('gulp'),
     browserify = require('browserify'),
     babelify= require('babelify');
 
-gulp.task('clean', function (cb) {
+gulp.task('clean', function () {
     'use strict';
     return del(['public/*']);
 });
